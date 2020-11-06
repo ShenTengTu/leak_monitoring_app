@@ -2,6 +2,7 @@
 SHELL_PYTHON:= $(shell pyenv which python)
 
 miscellaneous_targets:=help format
+poetry_targets:=exports-py-deps
 .PHONY: .FORCE_UPDATE $(miscellaneous_targets)
 .FORCE_UPDATE:
 
@@ -43,3 +44,9 @@ help:
 ## Formattin Python scripts by Black.
 format-py:
 	@black .
+
+## ===== Exports ===== 
+
+## Exports `tool.poetry.dependencies` to `requirements.txt`
+exports-py-deps:
+	@$(SHELL_PYTHON) -B -u scripts/dump_deps.py py
