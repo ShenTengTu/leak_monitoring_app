@@ -1,0 +1,6 @@
+{% from 'macro/offcanvas.jinja' import offcanvas %}
+{%call offcanvas("sidebar-nav", overlay=true, flip=true) %}
+<ul class="" uk-nav>
+    <li class="uk-active"><a href="{{url_for('dashboard')}}">Dashboard</a></li>
+</ul>
+{% endcall %}

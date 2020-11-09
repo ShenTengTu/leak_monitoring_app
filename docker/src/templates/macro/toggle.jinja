@@ -1,0 +1,9 @@
+{% macro toggle_button(target, class="") -%}
+    {% with %}
+        {% set ns = namespace(class="uk-button {}".format(class), options="target: {}".format(target)) %}
+        {% for k, v in kwargs.items() if k in ("mode", "cls", "media", "animation", "duration", "queued") %}
+            {% set ns.options = "{}; {}: {}".format(ns.options, k, v) %}
+        {% endfor %}
+        <button class="{{ns.class|trim}}" type="button" uk-toggle="{{ns.options|trim}}">{{caller()}}</button>
+    {% endwith %}
+{%- endmacro %}

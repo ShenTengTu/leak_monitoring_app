@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+    web_server:
+        build:
+            context: .
+            target: web_server
+        restart: always
+        ports:
+            - 80:80
+            - 1883:1883 # EMQX MQTT
+            - 18083:18083 # EMQX dashboard
+        networks:
+            nginx_network:
+                ipv4_address: 172.20.20.2
+        depends_on:
+            - mqtt_broker
+            - app_server
+    mqtt_broker: 
+        image: emqx/emqx:4.2.2
+        restart: always
+        env_file: env/mqtt_broker.env
+        networks:
+            nginx_network:
+                ipv4_address: 172.20.20.3
+    app_server:
+        build:
+            context: .
+            target: app_server
+        restart: always
+        env_file: env/app_server.env
+        expose:
+            - 8000
+        networks:
+            nginx_network:
+                ipv4_address: 172.20.20.4
+        volumes:
+            - ./src:/root/.local/lib/${COMPOSE_PROJECT_NAME}
+
+volumes:
+   etc_app_server:
+
+networks:
+    nginx_network:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.20.20.0/24
+  

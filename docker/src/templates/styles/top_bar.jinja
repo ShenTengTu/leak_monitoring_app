@@ -1,0 +1,19 @@
+<style name="top-bar">
+    .uk-container[top-bar] {
+        padding-top: 8px;
+        padding-bottom: 8px;
+        background: #1a535c;
+    }
+
+    .uk-container[top-bar] .uk-breadcrumb {
+        margin: 0;  
+    }
+
+    .uk-container[top-bar] .uk-breadcrumb > * > *,  .uk-container[top-bar] .uk-breadcrumb>:nth-child(n+2):not(.uk-first-column)::before {
+        color: rgba(255,255,255, 0.7);
+    }
+
+    .uk-container[top-bar] .uk-breadcrumb>:last-child>a:not([href]), .uk-container[top-bar] .uk-breadcrumb>:last-child>span {
+        color:  rgba(250,250,250, 0.7);
+    }
+</style>

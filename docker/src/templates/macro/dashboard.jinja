@@ -1,0 +1,44 @@
+{% macro alert_device_card(index, name_prefix, members) -%}
+{% with %}
+{% set device_name=(name_prefix, index)|join( '_') %}
+<div alert_device="{{device_name}}">
+    <div class="uk-card uk-card-small uk-card-default uk-width-1-1">
+        <div class="uk-card-header uk-position-relative" style="padding: 8px 8px;">
+            <div class="uk-label uk-position-absolute uk-position-small uk-position-center-right" label-status="disable">offline</div>
+            <div class="uk-grid-small uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                    <span uk-icon="icon: bolt; ratio: 2"></span>
+                </div>
+                <div class="uk-width-expand">
+                    <h3 class="uk-card-title">{{device_name}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="uk-card-body" style="padding: 8px 8px;">
+            <div class="uk-flex  uk-flex-around uk-flex-wrap">
+                {% if members is iterable %}
+                    {% for member in members %}
+                        <div alert_device_member="{{device_name~'-'~member}}">
+                            <div class="uk-card uk-card-default uk-card-hover uk-alert-primary" data-status="uk-alert-primary">
+                                <div class="uk-card-body uk-padding-remove">
+                                    <table class="uk-table uk-table-middle uk-table-divider uk-text-center">
+                                        <tbody>
+                                            <tr>
+                                                <td><span uk-icon="icon: user; ratio: 2"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><div class="uk-badge"  label-status="default">ID: {{member}}</div></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}
+{%- endmacro %}

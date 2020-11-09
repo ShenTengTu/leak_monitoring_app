@@ -1,0 +1,5 @@
+[ndlm_leak_monitoring_app]
+title = Nephrology Dialysis Leak Monitoring App
+description = HTTP,HTTPS,MQTT,MQTTS
+ports = 80,443,1883,8883/tcp
+

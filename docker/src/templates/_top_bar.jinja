@@ -1,0 +1,14 @@
+    {% from 'macro/toggle.jinja' import toggle_button %}
+    <div top-bar class="uk-container uk-container-expand">
+        <div class="uk-flex uk-flex-between uk-flex-middle">
+            <div>
+                <ul class="uk-breadcrumb">
+                    <li><a href="{{url_for('dashboard')}}">Leak Monitoring</a></li>
+                    <li class="uk-disabled uk-text-bold"><span>Dashboard</span></li>
+                </ul>
+            </div>
+            <div>
+                {%call toggle_button("#sidebar-nav", class="uk-button-small uk-button-text uk-light") %}<span uk-icon="menu"></span>Menu{% endcall %}
+            </div>
+        </div>
+    </div>
