@@ -1,0 +1,141 @@
+{% from 'macro/dashboard.jinja' import alert_device_card %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Dashboard</title>
+    {% include '_uikit.jinja' %}
+     {% include 'styles/base.jinja' %}
+     {% include 'styles/top_bar.jinja' %}
+      {% include 'styles/alert_device_card.jinja' %}
+</head>
+<body>
+    {% include '_top_bar.jinja' %}
+    <div class="uk-section uk-section-xsmall">
+        <div class="uk-container  uk-container-expand">
+            <div class="uk-flex uk-flex-between uk-flex-middle">
+                <div>
+                    <h3 class="uk-heading-bullet">Alert devices</h3>
+                </div>
+                <div>
+                    Source : <div source_label class="uk-label" label-status="disable">offline</div>
+                </div>
+            </div>
+            <div class="uk-grid-small uk-child-width-1-2@m uk-child-width-1-3@xl" uk-grid>
+                {% for number in range(n_of_alert_device) %}
+                    {{alert_device_card(number, alert_device_prefix, range(members_of_each_device))}}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% include '_side_menu.jinja' %}
+    <script>
+        ((device_prefix, source_url) => {
+            /* UI */
+            let alert_status = {
+                default: "uk-alert-primary",
+                "0x00": "uk-alert-success",
+                "0x01": "uk-alert-warning",
+                "0x02": "uk-alert-danger"
+            }
+
+            function update_device_alert(device_name, member, status) {
+                let s = `div[alert_device_member="${device_name}-${member}"]`
+                if (member == undefined) {
+                    s = `div[alert_device_member^="${device_name}-"]`
+                }
+                if (device_name == undefined) {
+                    s = `div[alert_device_member^="${device_prefix}"]`
+                }
+                els = document.querySelectorAll(s);
+               for (let el of els) {
+                let dataset = el.firstElementChild.dataset;
+                let v = (status in alert_status) ? alert_status[status] : alert_status["default"];
+                el.firstElementChild.classList.replace(dataset.status, v);
+                dataset.status = v;
+               }
+            }
+
+            function update_device_status(device_name, status) {
+                s = `div[alert_device='${device_name}'] div[label-status]`
+                if (device_name == undefined) {
+                    s = `div[alert_device^="${device_prefix}"] div[label-status]`
+                }
+                e = document.querySelector(s)
+                if (e) {
+                    e.textContent = status ? "online": "offline";
+                    e.setAttribute("label-status", status ? "default": "disable");
+                }
+            }
+
+            function update_sse_status(status) {
+                e = document.querySelector("div[source_label]");
+                if (e) {
+                    e.textContent = status ? "online": "offline";
+                    e.setAttribute("label-status", status ? "default": "disable");
+                }
+            }
+
+            /* SSE */
+            function SSECtrl(url) {
+                this.__url = url
+                this.__source = null
+            }
+
+            SSECtrl.prototype.connect = function() {
+                console.log("open EventSource.")
+                this.__source = new EventSource(this.__url)
+                this.__source.onopen= function(event) {
+                    update_sse_status(true)
+                }
+                this.__source.onmessage = function(event) {}
+                this.__source.onerror = function(err) {
+                    console.error("EventSource failed:");
+                    update_device_alert(undefined, undefined, false);
+                    update_device_status(undefined, false);
+                    update_sse_status(false);
+                }
+                this.__source.addEventListener("ping", function(event) {});
+                this.__source.addEventListener("mqtt_client_connected", function(event) {
+                    data = JSON.parse(event.data)
+                    update_device_status(data.username, true)
+                });
+                this.__source.addEventListener("mqtt_client_disconnected", function(event) {
+                    data = JSON.parse(event.data)
+                    update_device_alert(data.username, undefined, "default"); 
+                    update_device_status(data.username, false)
+                });
+                this.__source.addEventListener("mqtt_message_publish", function(event) {
+                    data = JSON.parse(event.data);
+                    /* Update  UI */
+                    update_device_status(data.from_username, true);
+                    /* check topic */
+                    let regex = /(?<=^cgmh\/nephrology\/dialysis\/leak_monitoring)[\/\w]+/;
+                    let m = data.topic.match(regex);
+                    if (m == null) return;
+                    let result = Array.from(m[0].matchAll(/\w+/g), m => m[0]);
+                    if (result.length !== 2) return;
+                    if (result[0] !== data.from_username) return;
+                    /* O    peration based on topic*/
+                    switch(result[1]){
+                        case "alert_level":
+                            if (data.payload instanceof Array) {
+                                for (let e of data.payload) {
+                                    if (e == null) continue;
+                                    let [id, address, level] = e;
+                                    update_device_alert(result[0], id, level)
+                                }
+                            }
+                            break;
+                    }
+                });
+            }
+
+            SSECtrl.prototype.close = function() {
+                if (this.__source instanceof EventSource) this.__source.close();
+            }
+            const sse_ctrl = new SSECtrl(source_url);   
+            sse_ctrl.connect();
+        })("{{alert_device_prefix}}", "{{url_for('sse:alert_devices')}}");
+    </script>
+</body>
+</html>

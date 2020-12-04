@@ -1,0 +1,13 @@
+{% macro offcanvas(id, class="") -%}
+    {% with %}
+        {% set ns = namespace(class="uk-offcanvas-bar {}".format(class), options="") %}
+        {% for k, v in kwargs.items() if k in ("mode", "flip", "overlay", "esc-close", "bg-close", "container") %}
+            {% set ns.options = "{}{}: {}; ".format(ns.options, k, v) %}
+        {% endfor %}
+    <div id="{{id}}" uk-offcanvas="{{ns.options|trim}}">
+        <div class="{{ns.class|trim}}">
+            <button class="uk-offcanvas-close" type="button" uk-close></button>{{caller()}}
+        </div>
+    </div>
+    {% endwith %}
+{%- endmacro %}

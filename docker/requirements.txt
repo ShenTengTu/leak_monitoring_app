@@ -1,0 +1,7 @@
+gmqtt~=0.6.7
+uvloop~=0.14.0
+uvicorn[standard]~=0.12.2
+starlette[full]~=0.13.8
+sse-starlette~=0.6.1
+x-msgpack~=0.2.0
+debugpy~=1.2.0
