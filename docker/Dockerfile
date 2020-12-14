@@ -1,4 +1,4 @@
-FROM nginx:1.9.4 as web_server
+FROM nginx:1.19.4 as web_server
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/conf.d /etc/nginx/conf.d
 
