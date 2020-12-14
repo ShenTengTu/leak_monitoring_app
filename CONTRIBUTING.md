@@ -34,8 +34,44 @@ sudo apt-get install --no-install-recommends yarn
 
 ## Docker
 The application of this project runs in **Docker containers**.
-- See "[Install Docker Engine on Ubuntu]" for Ubuntu.
-- See "[Install Docker Engine on Debian]" for Raspbian.
+- See "[Install Docker Engine on Ubuntu]" for Ubuntu. **(version 19.03.14)**
+- See "[Install Docker Engine on Debian]" for Raspbian. **(version 19.03.14)**
+
+## Docker Compose
+The application of this project runs
+- See "[Install Docker Compose (Linux)]"for Ubuntu. **(version 1.27.4)**
+- See "[Install Docker Compose (Alternative Install Options)]"for Raspbian. **(version 1.27.4)**
+
+Installing Docker Compose on Raspbian needs using `pip`.
+Because We use **[pyenv]** to manage Python version,
+please  using **3.7.9** version in **global** scope.
+```
+$ pyenv global 3.7.9
+
+$ pyenv versions
+  system
+* 3.7.9 (set by /home/pi/.pyenv/version)
+
+$ python -- version
+Python 3.7.9
+```
+
+Then, install dependencies first.
+```
+$ sudo apt-get install -y libffi-dev libssl-dev
+$ sudo apt-get remove python-configparser
+```
+
+At last, install Docker Compose from pypi using `pip`, and reload shell after installing successful.
+```
+$ pip install docker-compose
+
+$ source ~/.profile
+```
+
+
 
 [Install Docker Engine on Ubuntu]: https://docs.docker.com/engine/install/ubuntu/
 [Install Docker Engine on Debian]: https://docs.docker.com/engine/install/debian/
+[Install Docker Compose (Linux)]: https://docs.docker.com/compose/install/#install-compose-on-linux-systems
+[Install Docker Compose (Alternative Install Options)]: https://docs.docker.com/compose/install/#alternative-install-options

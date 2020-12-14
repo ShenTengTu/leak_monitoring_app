@@ -11,6 +11,10 @@ Machine:
   - OS: Raspbian GNU/Linux 10 (buster)
 
 System:
+- Docker: 19.03.14
+- Docker Compose: 1.27.4
+
+In containers:
 - Python: 3.7.9
 - Nginx: 1.19.4
 - EMQ X Broker: 4.2.2
@@ -70,3 +74,6 @@ Default: deny (incoming), allow (outgoing), deny (routed)
 80,443,1883,8883/tcp (ndlm_leak_monitoring_app) ALLOW IN    Anywhere                  
 80,443,1883,8883/tcp (ndlm_leak_monitoring_app (v6)) ALLOW IN    Anywhere (v6)
 ```
+
+## Env files for Docker Compose
+You need to create  Env files manually in `docker/env` folder. See example contents in `docker/env_example`.
