@@ -74,12 +74,17 @@ exports-static-files:
 	@$(SHELL_PYTHON) -B -u scripts/dump_deps.py static_files
 
 ## ===== Docker =====
-
+## Docker compose build
+docker-compose-build:
+	@$(DOCKER_COMPOSE) build
 ## Docker compose up
 docker-compose-up:
-	@$(DOCKER_COMPOSE) up -d  --build
+	@$(DOCKER_COMPOSE) up -d
 
 ## Docker compose down
 docker-compose-down:
-	@$(DOCKER_COMPOSE) down --rmi local -v
-	
+	@$(DOCKER_COMPOSE) down
+
+## Docker compose clean up
+docker-compose-clean-up:
+	@$(DOCKER_COMPOSE) down --rmi local  -v

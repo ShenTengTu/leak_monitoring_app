@@ -22,6 +22,11 @@ services:
         networks:
             nginx_network:
                 ipv4_address: 172.20.20.3
+        volumes:
+            - opt_emqx_data:/opt/emqx/data
+            - opt_emqx_etc:/opt/emqx/etc
+            - opt_eqmx_log:/opt/emqx/log
+            - opt_emqx_lib:/opt/emqx/lib
     app_server:
         build:
             context: .
@@ -35,9 +40,14 @@ services:
                 ipv4_address: 172.20.20.4
         volumes:
             - ./src:/root/.local/lib/${COMPOSE_PROJECT_NAME}
+            - etc_app_server:/root/.local/etc/${COMPOSE_PROJECT_NAME}
 
 volumes:
-   etc_app_server:
+    etc_app_server:
+    opt_emqx_data:
+    opt_emqx_etc:
+    opt_eqmx_log:
+    opt_emqx_lib:
 
 networks:
     nginx_network:
