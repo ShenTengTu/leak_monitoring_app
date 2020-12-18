@@ -13,6 +13,8 @@ DOCKER_COMPOSE_FILE=docker/docker-compose.yml
 DOCKER:=docker --config docker
 DOCKER_COMPOSE:=docker-compose -p $(DOCKER_PROJECT_NAME) --env-file  $(DOCKER_COMPOSE_ENV) -f $(DOCKER_COMPOSE_FILE)
 
+SYS_SERV_WORKING_DIR=/etc/docker/compose/$(DOCKER_PROJECT_NAME)
+
 miscellaneous_targets=format-py
 export_targets=exports-py-deps exports-ufw-profile exports-static-files
 docker_targets=docker-compose-up docker-compose-down
@@ -74,6 +76,7 @@ exports-static-files:
 	@$(SHELL_PYTHON) -B -u scripts/dump_deps.py static_files
 
 ## ===== Docker =====
+
 ## Docker compose build
 docker-compose-build:
 	@$(DOCKER_COMPOSE) build
@@ -88,3 +91,34 @@ docker-compose-down:
 ## Docker compose clean up
 docker-compose-clean-up:
 	@$(DOCKER_COMPOSE) down --rmi local  -v
+
+## ===== systemd =====
+
+## Deploy systemd service (on Raspberry Pi)
+deploy-systemd-service:
+	@sudo $(DOCKER_COMPOSE) build
+	@if [ ! -d "$(SYS_SERV_WORKING_DIR)" ]; then sudo mkdir -p "$(SYS_SERV_WORKING_DIR)"; fi
+	@sudo cp $(DOCKER_COMPOSE_FILE) $(SYS_SERV_WORKING_DIR)
+	@sudo cp $(DOCKER_COMPOSE_ENV) $(SYS_SERV_WORKING_DIR)
+	@ sudo cp -r docker/env  $(SYS_SERV_WORKING_DIR)
+	@sudo cp config/systemd/docker-compose@.service /etc/systemd/system
+
+## Start systemd service (on Raspberry Pi)
+systemctl-start:
+	@sudo systemctl start docker-compose@$(DOCKER_PROJECT_NAME)
+
+## Stop systemd service (on Raspberry Pi)
+systemctl-stop:
+	@sudo systemctl stop docker-compose@$(DOCKER_PROJECT_NAME)
+
+## Enable systemd service (on Raspberry Pi)
+systemctl-enable:
+	@sudo systemctl enable docker-compose@$(DOCKER_PROJECT_NAME)
+
+## Disable systemd service (on Raspberry Pi)
+systemctl-disable:
+	@sudo systemctl disable docker-compose@$(DOCKER_PROJECT_NAME)
+
+## Reload systemd service (on Raspberry Pi)
+systemctl-reload:
+	@sudo systemctl daemon-reload

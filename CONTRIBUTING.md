@@ -38,11 +38,13 @@ The application of this project runs in **Docker containers**.
 - See "[Install Docker Engine on Debian]" for Raspbian. **(version 19.03.14)**
 
 ## Docker Compose
-The application of this project runs
+The application of this project runs in **Docker containers**.
 - See "[Install Docker Compose (Linux)]"for Ubuntu. **(version 1.27.4)**
 - See "[Install Docker Compose (Alternative Install Options)]"for Raspbian. **(version 1.27.4)**
 
 Installing Docker Compose on Raspbian needs using `pip`.
+
+### For development on Raspbian
 Because We use **[pyenv]** to manage Python version,
 please  using **3.7.9** version in **global** scope.
 ```
@@ -69,6 +71,32 @@ $ pip install docker-compose
 $ source ~/.profile
 ```
 
+Check the installation path.
+```
+$ which docker-compose
+/home/pi/.pyenv/shims/docker-compose
+
+$ pyenv which docker-compose
+/home/pi/.pyenv/versions/3.7.9/bin/docker-compose
+```
+
+### For deployment  on Raspbian
+Install dependencies first.
+```
+$ sudo apt-get install -y libffi-dev libssl-dev
+$ sudo apt-get remove python-configparser
+```
+
+Using system `pip3` to install Docker Compose.
+```
+$ sudo pip3 -v install docker-compose
+```
+
+Check the installation path.
+```
+$ sudo which docker-compose
+/usr/local/bin/docker-compose
+```
 
 
 [Install Docker Engine on Ubuntu]: https://docs.docker.com/engine/install/ubuntu/
