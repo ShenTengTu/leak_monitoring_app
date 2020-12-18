@@ -77,3 +77,19 @@ Default: deny (incoming), allow (outgoing), deny (routed)
 
 ## Env files for Docker Compose
 You need to create  Env files manually in `docker/env` folder. See example contents in `docker/env_example`.
+
+## Deploy as systemd service on  Raspberry Pi
+We create the systemd service template for Docker compose, see `config/systemd/docker-compose@.service`.
+
+To deploy application as systemd service, execute the follow command first:
+```
+make deploy-systemd-service
+```
+It will build Docker images and copy `docker-compose.yml` & Env files to `/etc/docker/compose/ndlm_leak_monitoring_app`
+
+Then start `docker-compose@ndlm_leak_monitoring_app. service`& enable it to start on boot.
+```
+make systemctl-start
+make systemctl-enable
+```
+The service requires `docker.service`, please check `docker.service` is to start on boot.

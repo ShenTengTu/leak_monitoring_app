@@ -1,0 +1,15 @@
+[Unit]
+Description=%i service with docker compose
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+TimeoutStartSec=1min
+Restart=always
+WorkingDirectory=/etc/docker/compose/%i
+ExecStart=/usr/local/bin/docker-compose -p %i --env-file  compose.env up --remove-orphans
+ExecStop=/usr/local/bin/docker-compose -p %i --env-file  compose.env  down --remove-orphans
+
+[Install]
+WantedBy=multi-user.target

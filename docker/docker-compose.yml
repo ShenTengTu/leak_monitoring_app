@@ -4,7 +4,7 @@ services:
         build:
             context: .
             target: web_server
-        restart: always
+        restart: unless-stopped
         ports:
             - 80:80
             - 1883:1883 # EMQX MQTT
@@ -17,16 +17,21 @@ services:
             - app_server
     mqtt_broker: 
         image: emqx/emqx:4.2.2
-        restart: always
+        restart: unless-stopped
         env_file: env/mqtt_broker.env
         networks:
             nginx_network:
                 ipv4_address: 172.20.20.3
+        volumes:
+            - opt_emqx_data:/opt/emqx/data
+            - opt_emqx_etc:/opt/emqx/etc
+            - opt_eqmx_log:/opt/emqx/log
+            - opt_emqx_lib:/opt/emqx/lib
     app_server:
         build:
             context: .
             target: app_server
-        restart: always
+        restart: unless-stopped
         env_file: env/app_server.env
         expose:
             - 8000
@@ -34,10 +39,15 @@ services:
             nginx_network:
                 ipv4_address: 172.20.20.4
         volumes:
-            - ./src:/root/.local/lib/${COMPOSE_PROJECT_NAME}
+            # - ./src:/root/.local/lib/${COMPOSE_PROJECT_NAME}
+            - etc_app_server:/root/.local/etc/${COMPOSE_PROJECT_NAME}
 
 volumes:
-   etc_app_server:
+    etc_app_server:
+    opt_emqx_data:
+    opt_emqx_etc:
+    opt_eqmx_log:
+    opt_emqx_lib:
 
 networks:
     nginx_network:
