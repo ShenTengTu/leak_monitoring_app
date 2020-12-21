@@ -78,8 +78,13 @@ exports-static-files:
 ## ===== Docker =====
 
 ## Docker compose build
+## $ make docker-compose-build [no-cache=.]
 docker-compose-build:
-	@$(DOCKER_COMPOSE) build
+	@if [ -z "$(no-cache)" ]; then \
+        $(DOCKER_COMPOSE) build; \
+    else \
+        $(DOCKER_COMPOSE) build --no-cache; \
+    fi
 ## Docker compose up
 docker-compose-up:
 	@$(DOCKER_COMPOSE) up -d
