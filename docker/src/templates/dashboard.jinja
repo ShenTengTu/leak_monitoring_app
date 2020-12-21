@@ -125,6 +125,9 @@
                                     update_device_alert(result[0], id, level)
                                 }
                             }
+                            if (data.payload == null) { 
+                                update_device_alert(result[0], undefined, false);
+                            }
                             break;
                     }
                 });
