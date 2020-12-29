@@ -1,4 +1,7 @@
 # leak_monitoring_app
+
+![](img/leak_monitoring_app_containerization.png)
+
 ## Environment
 Machine:
 - Laptop
